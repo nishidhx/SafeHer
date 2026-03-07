@@ -12,7 +12,8 @@ func SetupRoutes(db *gorm.DB) *mux.Router {
 
 	authHandler := handlers.NewAuthHandler(db)
 	// Register the auth handler for the "/auth" route (example)
-	router.HandleFunc("/auth", authHandler.SafeHerLogin).Methods("POST")
+	router.HandleFunc("/auth/login", authHandler.SafeHerLogin).Methods("POST")
+	router.HandleFunc("/auth/register", authHandler.SafeHerRegister).Methods("POST")
 
 	return router
 }

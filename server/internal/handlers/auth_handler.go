@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"server/internal/models"
+	"server/pkg/conversions"
 
 	"gorm.io/gorm"
 )
@@ -31,7 +32,7 @@ func (h *AuthHandler) SafeHerLogin(writer http.ResponseWriter, request *http.Req
 
 	if err != nil {
 		http.Error(writer, "Invalid Request body", http.StatusBadRequest)
-		log.Fatalln("requst body not found or might be invalid")
+		log.Println("requst body not found or might be invalid")
 		return
 	}
 
@@ -51,4 +52,38 @@ func (h *AuthHandler) SafeHerLogin(writer http.ResponseWriter, request *http.Req
 	}
 
 	json.NewEncoder(writer).Encode(user)
+}
+
+func (h *AuthHandler) SafeHerRegister(writer http.ResponseWriter, request *http.Request) {
+	var req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	// decode the json from the request body for the signup endpoint and returns the err if error comes.
+	err := json.NewDecoder(request.Body).Decode(&req)
+
+	if err != nil {
+		http.Error(writer, "Invalid Request body", http.StatusBadRequest)
+		log.Println("requst body not found or might be invalid")
+		return
+	}
+
+	var hashed_pass string = conversions.HashingService(req.Password)
+
+	user := models.User{
+		Email:    req.Email,
+		Password: hashed_pass,
+	}
+
+	result := h.DB.Create(&user)
+
+	if result.Error != nil {
+		http.Error(writer, "failed to create user", http.StatusUnauthorized)
+		log.Println("Internal server error from db")
+		return
+	}
+
+	writer.WriteHeader(http.StatusCreated)
+	writer.Write([]byte("User registered successfully"))
 }
