@@ -1,10 +1,18 @@
 package routes
 
-import "github.com/gorilla/mux"
+import (
+	"server/internal/handlers"
 
-func SetupRoutes() *mux.Router {
-	r := mux.NewRouter()
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
+)
 
-	return r
+func SetupRoutes(db *gorm.DB) *mux.Router {
+	router := mux.NewRouter()
 
+	authHandler := handlers.NewAuthHandler(db)
+	// Register the auth handler for the "/auth" route (example)
+	router.HandleFunc("/auth", authHandler.SafeHerLogin).Methods("POST")
+
+	return router
 }
