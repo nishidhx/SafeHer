@@ -8,6 +8,23 @@ import (
 	"server/internal/routes"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Incoming request: %s %s from %s", r.Method, r.URL.Path, r.RemoteAddr)
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	db := database.Connect()
 
@@ -15,7 +32,6 @@ func main() {
 		log.Println("DB connected")
 	}
 
-	/* Auto migration of tables */
 	db.AutoMigrate(
 		&models.User{},
 		&models.EmergencyContact{},
@@ -26,5 +42,5 @@ func main() {
 
 	router := routes.SetupRoutes(db)
 	log.Println("Server is running on port: 8080")
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8080", corsMiddleware(router)) // ← only change here
 }
