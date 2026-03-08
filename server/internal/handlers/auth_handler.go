@@ -46,18 +46,26 @@ func (h *AuthHandler) SafeHerLogin(writer http.ResponseWriter, request *http.Req
 		return
 	}
 
-	if user.Password != req.Password {
+	isPasswordMatched := conversions.ComparehashPassword(req.Password, user.Password)
+
+	if isPasswordMatched == false {
 		http.Error(writer, "password or email is incorrect", http.StatusUnauthorized)
-		log.Fatalln("password is incorrect")
+		log.Println("password is incorrect")
+		return
 	}
 
-	json.NewEncoder(writer).Encode(user)
+	json.NewEncoder(writer).Encode(map[string]string{
+		"message": "Login successful",
+		"id":      string(user.ID),
+	})
 }
 
 func (h *AuthHandler) SafeHerRegister(writer http.ResponseWriter, request *http.Request) {
 	var req struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email       string `json:"email"`
+		Password    string `json:"password"`
+		PhoneNumber string `json:"phone_number"`
+		Name        string `json:"name"`
 	}
 
 	// decode the json from the request body for the signup endpoint and returns the err if error comes.
@@ -69,21 +77,28 @@ func (h *AuthHandler) SafeHerRegister(writer http.ResponseWriter, request *http.
 		return
 	}
 
+	log.Printf(req.Email, req.Password)
+
 	var hashed_pass string = conversions.HashingService(req.Password)
 
 	user := models.User{
-		Email:    req.Email,
-		Password: hashed_pass,
+		Email:       req.Email,
+		Password:    hashed_pass,
+		PhoneNumber: req.PhoneNumber,
+		Name:        req.Name,
 	}
+
+	log.Printf("%s", user.Email)
 
 	result := h.DB.Create(&user)
 
 	if result.Error != nil {
 		http.Error(writer, "failed to create user", http.StatusUnauthorized)
-		log.Println("Internal server error from db")
+		log.Println("Internal server error from db: ", result)
 		return
 	}
 
 	writer.WriteHeader(http.StatusCreated)
 	writer.Write([]byte("User registered successfully"))
+
 }
