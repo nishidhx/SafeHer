@@ -14,11 +14,10 @@ const (
 
 // tokenPayload holds the claims for the jwt token
 type TokenPayload struct {
-	UserID           string  `json:"user_id"`
-	Username         string  `json:"username"`
-	Location         float64 `json:"location"`
-	Email            string  `json:"email"`
-	EmergencyContact string  `json:"emergency_contact"`
+	UserID           string   `json:"user_id"`
+	Username         string   `json:"username"`
+	Email            string   `json:"email"`
+	EmergencyContact []string `json:"emergency_contact"`
 	jwt.RegisteredClaims
 }
 
@@ -41,7 +40,6 @@ func (t *TokenService) GenerateUserAuthenticationToken(paylod TokenPayload) (str
 		UserID:           paylod.UserID,
 		Username:         paylod.Username,
 		Email:            paylod.Email,
-		Location:         paylod.Location,
 		EmergencyContact: paylod.EmergencyContact,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),

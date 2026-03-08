@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"server/internal/models"
 	"server/pkg/conversions"
+	"server/pkg/jwt"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -54,10 +56,41 @@ func (h *AuthHandler) SafeHerLogin(writer http.ResponseWriter, request *http.Req
 		return
 	}
 
-	json.NewEncoder(writer).Encode(map[string]string{
+	tokenService, err := jwt.NewTokenService("SAFE_HER_SECRET")
+
+	emergencyContactStrings := make([]string, len(user.EmergencyContacts))
+	for i, contact := range user.EmergencyContacts {
+		emergencyContactStrings[i] = contact.PhoneNumber // or appropriate field
+	}
+
+	userAuthenticationToken, err := tokenService.GenerateUserAuthenticationToken(jwt.TokenPayload{
+		UserID:           user.ID,
+		Email:            req.Email,
+		Username:         user.Name,
+		EmergencyContact: emergencyContactStrings,
+	})
+
+	/* Cookie Logic */
+	expiration := time.Now().Add(24 * time.Hour) // Cookie expires in 24 hours
+	cookie := http.Cookie{
+		Name:     "session_token",
+		Value:    userAuthenticationToken,
+		Expires:  expiration,
+		Path:     "/",                  // Makes the cookie available across the entire site
+		HttpOnly: true,                 // Prevents access via JavaScript
+		Secure:   false,                // Ensures the cookie is sent over HTTPS only (recommended for production)
+		SameSite: http.SameSiteLaxMode, // Provides protection against CSRF
+	}
+
+	http.SetCookie(writer, &cookie)
+	writer.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(writer).Encode(map[string](string){
 		"message": "Login successful",
 		"id":      string(user.ID),
+		"token":   userAuthenticationToken,
 	})
+	writer.Write([]byte("Cookie has been set!"))
 }
 
 func (h *AuthHandler) SafeHerRegister(writer http.ResponseWriter, request *http.Request) {
