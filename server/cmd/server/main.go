@@ -6,6 +6,7 @@ import (
 	"server/internal/database"
 	"server/internal/models"
 	"server/internal/routes"
+	"server/internal/websocket"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -40,7 +41,13 @@ func main() {
 		&models.Incident{},
 	)
 
+	go websocket.ManagerInstance.Run()
+
 	router := routes.SetupRoutes(db)
+	// log.Println("Server is running on port: 8080")
+	// http.ListenAndServe(":8080", corsMiddleware(router)) // ← only change here
+
 	log.Println("Server is running on port: 8080")
-	http.ListenAndServe(":8080", corsMiddleware(router)) // ← only change here
+
+	log.Fatal(http.ListenAndServe(":8081", corsMiddleware(router)))
 }

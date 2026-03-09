@@ -2,6 +2,7 @@ package routes
 
 import (
 	"server/internal/handlers"
+	"server/internal/websocket"
 
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
@@ -16,5 +17,9 @@ func SetupRoutes(db *gorm.DB) *mux.Router {
 	router.HandleFunc("/auth/register", authHandler.SafeHerRegister).Methods("POST", "OPTIONS")
 
 	router.HandleFunc("/auth/", authHandler.SafeHerLogin).Methods("POST", "OPTIONS")
+
+	// websockets
+	router.HandleFunc("/ws/location", websocket.LocationSocket)
+
 	return router
 }

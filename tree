@@ -75,3 +75,12 @@ safeher-backend/
 ├── go.sum
 ├── Dockerfile
 └── README.md
+
+
+internal/websocket
+│
+├── upgrader.go      ← websocket upgrader
+├── location_socket.go
+├── sos_socket.go
+├── client.go
+└── manager.go
