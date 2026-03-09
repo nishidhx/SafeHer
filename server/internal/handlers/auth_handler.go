@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"server/internal/models"
@@ -134,4 +135,29 @@ func (h *AuthHandler) SafeHerRegister(writer http.ResponseWriter, request *http.
 	writer.WriteHeader(http.StatusCreated)
 	writer.Write([]byte("User registered successfully"))
 
+}
+
+func (h *AuthHandler) checkUserAuthenticated(writer http.ResponseWriter, request *http.Request) *jwt.TokenPayload {
+	session_token_cookie, err := request.Cookie("session_token")
+
+	if err != nil {
+		if err == http.ErrNoCookie {
+			log.Println("token not found")
+			fmt.Fprintln(writer, "no session_token found in the cookie user not authorized")
+		} else {
+			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			log.Printf("Error reading cookiee: %v", err)
+		}
+	}
+
+	tokenService, err := jwt.NewTokenService("SAFE_HER_SECRET")
+
+	tokenPayloadClaims, err := tokenService.ValidateUserAuthicationToken(session_token_cookie.Value)
+
+	if err != nil {
+		log.Printf("something went wrong invalid session Token: %v", err)
+		http.Error(writer, "invalid session_token", http.StatusUnauthorized)
+	}
+
+	return tokenPayloadClaims
 }

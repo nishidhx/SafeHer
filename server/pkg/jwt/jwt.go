@@ -82,3 +82,7 @@ func (t *TokenService) ValidateUserAuthicationToken(tokenString string) (*TokenP
 
 	return tokenPayloadClaims, nil
 }
+
+func getTokenService() (*TokenService, error) {
+	return NewTokenService("SAFE_HER_SECRET")
+}
