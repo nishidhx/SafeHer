@@ -15,19 +15,21 @@ func Connect() *gorm.DB {
 
 	database_url := os.Getenv("DB_URL")
 
-	var dsn string
+	log.Printf("DB_URL: %v", database_url)
 
-	if database_url != "" {
-		dsn = database_url
-	} else {
-		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode-disabled",
-			os.Getenv("DB_HOST"),
-			os.Getenv("DB_USER"),
-			os.Getenv("DB_PASS"),
-			os.Getenv("DB_NAME"),
-			os.Getenv("DB_PORT"),
-		)
-	}
+	var dsn string = database_url
+
+	// if database_url != "" {
+	// 	dsn = database_url
+	// } else {
+	// 	dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode-disabled",
+	// 		os.Getenv("DB_HOST"),
+	// 		os.Getenv("DB_USER"),
+	// 		os.Getenv("DB_PASS"),
+	// 		os.Getenv("DB_NAME"),
+	// 		os.Getenv("DB_PORT"),
+	// 	)
+	// }
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 

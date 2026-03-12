@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"server/internal/database"
+	"server/internal/middlewares"
 	"server/internal/models"
 	"server/internal/routes"
 	"server/internal/websocket"
@@ -49,5 +50,5 @@ func main() {
 
 	log.Println("Server is running on port: 8080")
 
-	log.Fatal(http.ListenAndServe(":8081", corsMiddleware(router)))
+	log.Fatal(http.ListenAndServe(":8081", middlewares.CorsMiddleware(router)))
 }
