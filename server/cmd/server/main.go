@@ -50,5 +50,5 @@ func main() {
 
 	log.Println("Server is running on port: 8080")
 
-	log.Fatal(http.ListenAndServe(":8081", middlewares.CorsMiddleware(router)))
+	log.Fatal(http.ListenAndServe(":8080", middlewares.CorsMiddleware(router)))
 }

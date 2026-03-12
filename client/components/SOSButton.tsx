@@ -35,10 +35,10 @@ export default function SOSButton() {
         return;
       }
 
-      await SMS.sendSMSAsync(["919910410543"], message);
+      await SMS.sendSMSAsync(["919217672083"], message);
 
       // Call (opens dialer)
-      Linking.openURL("tel:919910410543");
+      Linking.openURL("tel:919217672083");
     } catch (err) {
       console.log(err);
       Alert.alert("Error sending SOS");

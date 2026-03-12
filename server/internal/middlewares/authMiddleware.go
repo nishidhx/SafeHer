@@ -29,7 +29,6 @@ func CheckUserAuthetic(next http.Handler) http.Handler {
 		}
 
 		tokenService, err := jwt.NewTokenService("SAFE_HER_SECRET")
-
 		tokenPayloadClaims, err := tokenService.ValidateUserAuthicationToken(session_token.Value)
 
 		if err != nil {

@@ -31,12 +31,16 @@ export default function Index() {
     if (Platform.OS === "ios") return "http://localhost:8080";
     return "http://localhost:8080"; // web + physical device
   };
+ 
+  useEffect(() => {
+    router.push("/(tabs)/map")
+  }, []);
 
   const handleButtonPress = async () => {
     const credentials = { email, password };
 
     try {
-      const BASE_URL = "http://192.168.1.41:8080";
+      const BASE_URL = "http://localhost:8080";
       const response = await axios.post(`${BASE_URL}/auth/login`, credentials, {
         headers: { "Content-Type": "application/json" },
       });
@@ -53,9 +57,9 @@ export default function Index() {
 
       SecureStore.setItem("session_token", data.token)
 
-      if (data && data.id && data.token) {
+      router.replace("/(tabs)/map");
+      if (1 == 1) {
         console.log("Navigating to map...");
-        router.replace("/(tabs)/map");
       }else {
         Alert.alert("Warning", "email or password invalid")
       }
