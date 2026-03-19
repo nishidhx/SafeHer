@@ -1,0 +1,161 @@
+safeher/
+│
+├── client/                # React Native Mobile App
+├── server/                # Backend API
+├── ai-engine/             # Risk prediction model
+├── database/              # DB schemas & migrations
+├── docs/                  # Architecture diagrams
+├── scripts/               # deployment scripts
+│
+├── docker-compose.yml
+├── README.md
+└── .env
+
+client/
+│
+├── app/                   # Expo router pages
+│   ├── (tabs)/
+│   │   ├── home.tsx
+│   │   ├── report.tsx
+│   │   ├── sos.tsx
+│   │   └── profile.tsx
+│   │
+│   ├── auth/
+│   │   ├── login.tsx
+│   │   └── register.tsx
+│   │
+│   └── _layout.tsx
+│
+├── components/            # reusable UI components
+│   ├── MapView.tsx
+│   ├── HeatMap.tsx
+│   ├── SOSButton.tsx
+│   ├── SafeRouteCard.tsx
+│   └── Loading.tsx
+│
+├── services/              # API calls
+│   ├── api.ts
+│   ├── authService.ts
+│   ├── reportService.ts
+│   ├── sosService.ts
+│   └── routeService.ts
+│
+├── hooks/
+│   ├── useLocation.ts
+│   ├── useSOS.ts
+│   └── useSafeRoute.ts
+│
+├── context/
+│   ├── AuthContext.tsx
+│   └── LocationContext.tsx
+│
+├── utils/
+│   ├── constants.ts
+│   ├── helpers.ts
+│   └── riskScore.ts
+│
+├── assets/
+│   ├── icons/
+│   ├── images/
+│   └── animations/
+│
+├── types/
+│   ├── user.ts
+│   ├── incident.ts
+│   └── route.ts
+│
+├── config/
+│   └── env.ts
+│
+├── package.json
+└── tsconfig.json
+
+
+server/
+│
+├── src/
+│
+│   ├── controllers/
+│   │   ├── authController.ts
+│   │   ├── incidentController.ts
+│   │   ├── routeController.ts
+│   │   └── sosController.ts
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.ts
+│   │   ├── incidentRoutes.ts
+│   │   ├── routeRoutes.ts
+│   │   └── sosRoutes.ts
+│   │
+│   ├── services/
+│   │   ├── riskService.ts
+│   │   ├── mapService.ts
+│   │   ├── smsService.ts
+│   │   └── locationService.ts
+│   │
+│   ├── models/
+│   │   ├── User.ts
+│   │   ├── Incident.ts
+│   │   └── RiskZone.ts
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.ts
+│   │   ├── errorHandler.ts
+│   │   └── rateLimiter.ts
+│   │
+│   ├── utils/
+│   │   ├── logger.ts
+│   │   ├── geoUtils.ts
+│   │   └── riskCalculator.ts
+│   │
+│   ├── config/
+│   │   ├── db.ts
+│   │   ├── redis.ts
+│   │   └── env.ts
+│   │
+│   ├── websocket/
+│   │   └── locationSocket.ts
+│   │
+│   ├── app.ts
+│   └── server.ts
+│
+├── tests/
+│
+├── package.json
+└── tsconfig.json
+
+ai-engine/
+│
+├── models/
+│   └── risk_model.pkl
+│
+├── data/
+│   └── incident_dataset.csv
+│
+├── services/
+│   ├── risk_predictor.py
+│   └── feature_engineering.py
+│
+├── api/
+│   └── risk_api.py
+│
+├── training/
+│   └── train_model.py
+│
+├── utils/
+│   └── geo_processing.py
+│
+├── requirements.txt
+└── main.py
+
+database/
+│
+├── migrations/
+│   ├── create_users.sql
+│   ├── create_incidents.sql
+│   └── create_risk_zones.sql
+│
+├── seeds/
+│   └── seed_incidents.sql
+│
+└── schema.sql
